@@ -8,3 +8,15 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} Profile"
+
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='posts/')
+    caption = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now=True)
+    video = models.FileField(upload_to='videos/', blank=True, null=True)
+
+
+    def __str__(self):
+        return f"{self.user.username} - {self.created_at}"
+

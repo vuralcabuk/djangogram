@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.parsers import MultiPartParser, FormParser
-from .models import Profile
-from .serializers import ProfileSerializer
+from .models import Profile, Post
+from .serializers import ProfileSerializer, PostSerializer
 
 class LoginAPI(APIView):
     def post(self, request):
@@ -62,5 +62,35 @@ class ProfileAPI(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PostCreateAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser,FormParser]
+
+    def post(self, request):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user) # user'ı backend'de ayarlıyoruz.
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PostListAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        posts = Post.objects.all().order_by('-created_at') # en yeni gönderiler önce
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UsersPostAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        posts = Post.objects.filter(user=request.user).order_by('-created_at')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
