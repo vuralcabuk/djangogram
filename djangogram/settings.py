@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework.authtoken',
+    'posts',
 ]
 
 
@@ -133,3 +134,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
