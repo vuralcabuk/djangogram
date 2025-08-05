@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from .constants import SocialShareStatus
 
 User = get_user_model()
 
@@ -26,3 +27,12 @@ class SocialShare(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.platform} - {self.status}"
+
+class Share(models.Model):
+    ...
+    status = models.CharField(
+        max_length=20,
+        choices=[(status.value, status.name) for status in SocialShareStatus],
+        default=SocialShareStatus.PENDING.value
+    )
+    ...
