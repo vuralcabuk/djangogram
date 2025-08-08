@@ -1,6 +1,1 @@
 media/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.DS_Storevenv/
